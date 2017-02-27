@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using InTheHand.Net.Sockets;
 
 namespace Parroter.Parrot
@@ -38,7 +40,7 @@ namespace Parroter.Parrot
         /// 
         ///     Throws an exception when the connection failed.
         /// </summary>
-        public void Connect()
+        public async Task ConnectAsync()
         {
             // Find the Parrot RF Service.
             var parrotService = Device.InstalledServices.FirstOrDefault(x => _parrotRfServiceGuids.Contains(x));
@@ -53,15 +55,43 @@ namespace Parroter.Parrot
 
             // Send initial packet and stop other packets from being sent.
             var initialPacket = new byte[] { 0x00, 0x03, 0x00 };
-            BluetoothClient.GetStream().Write(initialPacket, 0, initialPacket.Length);
-            BluetoothClient.GetStream().Flush();
-            BluetoothClient.GetStream().Read(new byte[3], 0, 3);
+
+            await BluetoothClient.GetStream().WriteAsync(initialPacket, 0, initialPacket.Length);
+            await BluetoothClient.GetStream().FlushAsync();
+            await BluetoothClient.GetStream().ReadAsync(new byte[3], 0, 3);
 
             // Dispatch event
             ConnectedEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public XElement SendMessage(ParrotMessage message)
+        public async Task<int> GetBatteryPercentAsync()
+        {
+            var battery = await SendMessageAsync(new ParrotMessage(ZikApi.BatteryGet));
+            var batteryValue = battery.XPathSelectElement("/system/battery").Attribute("percent")?.Value;
+            if (batteryValue == null)
+                throw new Exception(nameof(batteryValue));
+
+            return int.Parse(batteryValue);
+        }
+
+        public async Task<bool> GetNoiseControlEnabledAsync()
+        {
+            var noiseControl = await SendMessageAsync(new ParrotMessage(ZikApi.NoiseControlEnabledGet));
+            var noiseControlValue = noiseControl.XPathSelectElement("/audio/noise_control").Attribute("enabled")?.Value;
+            if (noiseControlValue == null)
+                throw new NullReferenceException(nameof(noiseControlValue));
+
+            return noiseControlValue.Equals("true");
+        }
+
+        public async Task SetNoiseControlEnabledAsync(bool state)
+        {
+            var response = await SendMessageAsync(new ParrotMessage(ZikApi.NoiseControlEnabledSet, state.ToString().ToLower()));
+
+            Console.WriteLine(response);
+        }
+
+        private async Task<XElement> SendMessageAsync(ParrotMessage message)
         {
             if (!Connected)
                 throw new Exception($@"{nameof(ParrotClient)} is not connected.");
@@ -76,12 +106,12 @@ namespace Parroter.Parrot
                 // Send message to Parrot
                 var messageBytes = message.GetRequest();
 
-                BluetoothClient.GetStream().Write(messageBytes, 0, messageBytes.Length);
-                BluetoothClient.GetStream().Flush();
+                await BluetoothClient.GetStream().WriteAsync(messageBytes, 0, messageBytes.Length);
+                await BluetoothClient.GetStream().FlushAsync();
 
                 // Receive the response
                 var responseBuffer = new byte[1024];
-                BluetoothClient.GetStream().Read(responseBuffer, 0, responseBuffer.Length);
+                await BluetoothClient.GetStream().ReadAsync(responseBuffer, 0, responseBuffer.Length);
 
                 // Parse response
                 var responseLength = (short)((responseBuffer[0] << 8) | (responseBuffer[1] << 0));
