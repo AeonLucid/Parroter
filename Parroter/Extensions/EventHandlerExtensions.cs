@@ -25,23 +25,22 @@ namespace Parroter.Extensions
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
             var handler = evnt;
-            if (handler != null)
-            {
-                // Manually calling all event handlers so that we could capture and aggregate all the
-                // exceptions that are thrown by any of the event handlers attached to this event.  
-                var invocationList = handler.GetInvocationList();
+            if (handler == null) return;
 
-                Task.Factory.StartNew(() =>
+            // Manually calling all event handlers so that we could capture and aggregate all the
+            // exceptions that are thrown by any of the event handlers attached to this event.  
+            var invocationList = handler.GetInvocationList();
+
+            Task.Factory.StartNew(() =>
+            {
+                foreach (var @delegate in invocationList)
                 {
-                    foreach (var @delegate in invocationList)
-                    {
-                        var h = (EventHandler<T>) @delegate;
-                        // Explicitly not catching any exceptions. While there are several possibilities for handling these 
-                        // exceptions, such as a callback, the correct place to handle the exception is in the event handler.
-                        h.Invoke(sender, args);
-                    }
-                });
-            }
+                    var h = (EventHandler<T>) @delegate;
+                    // Explicitly not catching any exceptions. While there are several possibilities for handling these 
+                    // exceptions, such as a callback, the correct place to handle the exception is in the event handler.
+                    h.Invoke(sender, args);
+                }
+            });
         }
     }
 }

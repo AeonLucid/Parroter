@@ -10,11 +10,11 @@ namespace Parroter.Forms
 {
     internal partial class FrmControl : Form
     {
-        public Timer RefreshTimer { get; }
+        private Timer RefreshTimer { get; }
 
-        public NotifyIcon TrayIcon { get; }
+        private NotifyIcon TrayIcon { get; }
 
-        public ParrotClient Parrot { get; }
+        private ParrotClient Parrot { get; }
 
         public FrmControl(NotifyIcon trayIcon, BluetoothDeviceInfo device)
         {

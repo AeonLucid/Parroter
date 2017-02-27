@@ -40,11 +40,11 @@ namespace Parroter.Parrot.Controls
             ChangedEvent?.AsyncSafeInvoke(this, EventArgs.Empty);
         }
 
-        private void ParrotClientOnNotificationEvent(object sender, NotifyEventArgs notifyEventArgs)
+        private async void ParrotClientOnNotificationEvent(object sender, NotifyEventArgs notifyEventArgs)
         {
             if (notifyEventArgs.Resource == ResourceType.NoiseControlGet)
             {
-                Console.WriteLine("Received notify for noise control get.");
+                await GetNoiseControlAsync();
             }
         }
 
@@ -62,6 +62,13 @@ namespace Parroter.Parrot.Controls
         private async Task SetNoiseControlEnabledAsync(bool state)
         {
             await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.NoiseControlEnabledSet, state.ToString().ToLower()));
+        }
+
+        private async Task GetNoiseControlAsync()
+        {
+            var noiseControl = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.NoiseControlGet));
+
+            Console.WriteLine(noiseControl);
         }
 
         // Events

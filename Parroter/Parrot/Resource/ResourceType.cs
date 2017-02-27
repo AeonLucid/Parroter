@@ -1,6 +1,6 @@
 ﻿namespace Parroter.Parrot.Resource
 {
-    public enum ResourceType
+    internal enum ResourceType
     {
         UnknownResource,
         BatteryGet,

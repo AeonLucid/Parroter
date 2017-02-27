@@ -38,8 +38,6 @@ namespace Parroter.Parrot
 
         public NoiseControl NoiseControl { get; }
 
-        public bool Connected => BluetoothClient.Connected;
-
         /// <summary>
         ///     Connects to the Parrot RF Service, if that succeeds
         ///     it starts waiting for data to handle. 
@@ -56,7 +54,7 @@ namespace Parroter.Parrot
             // Connect to the service.
             BluetoothClient.Connect(Device.DeviceAddress, parrotService);
 
-            if (!Connected)
+            if (!BluetoothClient.Connected)
                 throw new Exception("Couldn't connect to the parrot rf service.");
 
             // Send initial packet and stop other packets from being sent.
@@ -87,7 +85,7 @@ namespace Parroter.Parrot
         /// <returns></returns>
         public async Task<XElement> SendMessageAsync(ParrotMessage message)
         {
-            if (!Connected)
+            if (!BluetoothClient.Connected)
                 throw new Exception($"{nameof(ParrotClient)} is not connected.");
 
             _waitingList.WaitOne();

@@ -4,7 +4,7 @@
     ///     Reverse engineered from the Parrot Zik android app.
     ///     https://play.google.com/store/apps/details?id=com.parrot.zik2
     /// </summary>
-    public static class ZikApi
+    internal static class ZikApi
     {
         public const string AccountUsernameGet = "/api/account/username/get";
 

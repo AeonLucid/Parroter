@@ -8,7 +8,7 @@ using Timer = System.Threading.Timer;
 
 namespace Parroter.Forms
 {
-    public partial class FrmMain : Form
+    internal partial class FrmMain : Form
     {
         private readonly string[] _validParrots = {
             "Parrot ZIK 3 V3.07"

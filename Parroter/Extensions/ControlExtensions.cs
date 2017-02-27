@@ -3,10 +3,8 @@ using System.Windows.Forms;
 
 namespace Parroter.Extensions
 {
-    public static class ControlExtensions
+    internal static class ControlExtensions
     {
-        public delegate void InvokeIfRequiredDelegate<T>(T obj) where T : ISynchronizeInvoke;
-
         public static void InvokeIfRequired(this ISynchronizeInvoke obj, MethodInvoker action)
         {
             if (obj.InvokeRequired)

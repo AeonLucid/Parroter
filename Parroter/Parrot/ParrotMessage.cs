@@ -5,7 +5,7 @@ using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot
 {
-    public class ParrotMessage
+    internal class ParrotMessage
     {
         public ParrotMessage(ResourceType resource, string arg = null)
         {
@@ -16,22 +16,22 @@ namespace Parroter.Parrot
                 : $@"GET {Resource}";
         }
 
-        public string Resource { get; }
+        private string Resource { get; }
 
-        public string Arg { get; }
+        private string Arg { get; }
 
         public string Request { get; }
 
         public byte[] GetRequest()
         {
             var length = Request.Length + 3;
-            var message = new List<byte>(length);
-
-            // Header
-            message.Add((byte)(length >> 8));
-            message.Add((byte)(length >> 0));
-            message.Add(0x80);
-
+            var message = new List<byte>(length)
+            {
+                // Header
+                (byte) (length >> 8),
+                (byte) (length >> 0), 0x80
+            };
+            
             // Body
             message.AddRange(Encoding.ASCII.GetBytes(Request));
 

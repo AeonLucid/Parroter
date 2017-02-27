@@ -2,7 +2,7 @@
 
 namespace Parroter.Parrot.Resource
 {
-    public class NotifyEventArgs : EventArgs
+    internal class NotifyEventArgs : EventArgs
     {
         public NotifyEventArgs(ResourceType resource, string path)
         {
