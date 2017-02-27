@@ -1,4 +1,4 @@
-<img src="https://cloud.githubusercontent.com/assets/4643257/23366398/d7da8a40-fd06-11e6-8c17-e72cb4e15094.png" align="left">
+![parrot](https://cloud.githubusercontent.com/assets/4643257/23366398/d7da8a40-fd06-11e6-8c17-e72cb4e15094.png)
 
 # Parroter
 
