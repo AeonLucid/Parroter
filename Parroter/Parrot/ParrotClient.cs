@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using InTheHand.Net.Sockets;
+using Parroter.Extensions;
+using Parroter.Parrot.Controls;
+using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot
 {
     /// <summary>
     ///     A client for communication with the Parrot RF Service.
     /// </summary>
-    public class ParrotClient
+    internal class ParrotClient
     {
         private readonly Guid[] _parrotRfServiceGuids = {
             Guid.Parse("8b6814d3-6ce7-4498-9700-9312c1711f64")
@@ -24,13 +27,16 @@ namespace Parroter.Parrot
         {
             Device = device;
             BluetoothClient = new BluetoothClient();
+            NoiseControl = new NoiseControl(this);
 
             _waitingList = new Semaphore(1, 1);
         }
-
+        
         public BluetoothDeviceInfo Device { get; }
 
         private BluetoothClient BluetoothClient { get; }
+
+        public NoiseControl NoiseControl { get; }
 
         public bool Connected => BluetoothClient.Connected;
 
@@ -61,12 +67,12 @@ namespace Parroter.Parrot
             await BluetoothClient.GetStream().ReadAsync(new byte[3], 0, 3);
 
             // Dispatch event
-            ConnectedEvent?.Invoke(this, EventArgs.Empty);
+            ConnectedEvent.AsyncSafeInvoke(this, EventArgs.Empty);
         }
 
         public async Task<int> GetBatteryPercentAsync()
         {
-            var battery = await SendMessageAsync(new ParrotMessage(ZikApi.BatteryGet));
+            var battery = await SendMessageAsync(new ParrotMessage(ResourceType.BatteryGet));
             var batteryValue = battery.XPathSelectElement("/system/battery").Attribute("percent")?.Value;
             if (batteryValue == null)
                 throw new Exception(nameof(batteryValue));
@@ -74,34 +80,22 @@ namespace Parroter.Parrot
             return int.Parse(batteryValue);
         }
 
-        public async Task<bool> GetNoiseControlEnabledAsync()
-        {
-            var noiseControl = await SendMessageAsync(new ParrotMessage(ZikApi.NoiseControlEnabledGet));
-            var noiseControlValue = noiseControl.XPathSelectElement("/audio/noise_control").Attribute("enabled")?.Value;
-            if (noiseControlValue == null)
-                throw new NullReferenceException(nameof(noiseControlValue));
-
-            return noiseControlValue.Equals("true");
-        }
-
-        public async Task SetNoiseControlEnabledAsync(bool state)
-        {
-            var response = await SendMessageAsync(new ParrotMessage(ZikApi.NoiseControlEnabledSet, state.ToString().ToLower()));
-
-            Console.WriteLine(response);
-        }
-
-        private async Task<XElement> SendMessageAsync(ParrotMessage message)
+        /// <summary>
+        ///     Sends a message to the Parrot RF Service.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public async Task<XElement> SendMessageAsync(ParrotMessage message)
         {
             if (!Connected)
-                throw new Exception($@"{nameof(ParrotClient)} is not connected.");
+                throw new Exception($"{nameof(ParrotClient)} is not connected.");
 
             _waitingList.WaitOne();
 
             try
             {
                 // Debug message
-                Console.WriteLine($@"Sending message '{message.Request}'");
+                Console.WriteLine($"Sending message '{message.Request}'");
 
                 // Send message to Parrot
                 var messageBytes = message.GetRequest();
@@ -115,8 +109,20 @@ namespace Parroter.Parrot
 
                 // Parse response
                 var responseLength = (short)((responseBuffer[0] << 8) | (responseBuffer[1] << 0));
+                var element = XElement.Parse(Encoding.ASCII.GetString(responseBuffer, 7, responseLength - 7));
 
-                return XElement.Parse(Encoding.ASCII.GetString(responseBuffer, 7, responseLength - 7));
+                // Notifications
+                var notifyElement = element.XPathSelectElement("/notify");
+                var notifyPath = notifyElement?.Attribute("path")?.Value;
+                if (notifyPath != null)
+                {
+                    var resource = ResourceManager.Resources.FirstOrDefault(x => x.Value.Equals(notifyPath)).Key;
+
+                    NotificationEvent?.AsyncSafeInvoke(this, new NotifyEventArgs(resource, notifyPath));
+                }
+
+                // Return
+                return element;
             }
             finally
             {
@@ -125,5 +131,7 @@ namespace Parroter.Parrot
         }
 
         public event EventHandler<EventArgs> ConnectedEvent;
+
+        public event EventHandler<NotifyEventArgs> NotificationEvent;
     }
 }

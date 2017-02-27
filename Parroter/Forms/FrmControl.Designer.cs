@@ -44,23 +44,23 @@
             this.toolStripSeparator1,
             this.TrayIconNoiseControl});
             this.TrayIconContextMenu.Name = "TrayIconContextMenu";
-            this.TrayIconContextMenu.Size = new System.Drawing.Size(153, 76);
+            this.TrayIconContextMenu.Size = new System.Drawing.Size(146, 54);
             // 
             // TrayIconBatteryText
             // 
             this.TrayIconBatteryText.Name = "TrayIconBatteryText";
-            this.TrayIconBatteryText.Size = new System.Drawing.Size(181, 22);
+            this.TrayIconBatteryText.Size = new System.Drawing.Size(145, 22);
             this.TrayIconBatteryText.Text = "Battery: 0%";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(178, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
             // 
             // TrayIconNoiseControl
             // 
             this.TrayIconNoiseControl.Name = "TrayIconNoiseControl";
-            this.TrayIconNoiseControl.Size = new System.Drawing.Size(152, 22);
+            this.TrayIconNoiseControl.Size = new System.Drawing.Size(145, 22);
             this.TrayIconNoiseControl.Text = "Noise control";
             this.TrayIconNoiseControl.Click += new System.EventHandler(this.TrayIconNoiseControl_Click);
             // 
@@ -74,6 +74,7 @@
             this.Name = "FrmControl";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Parroter";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmControl_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmControl_FormClosed);
             this.Load += new System.EventHandler(this.FrmControl_Load);
             this.TrayIconContextMenu.ResumeLayout(false);

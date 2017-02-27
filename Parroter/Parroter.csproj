@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Forms\FrmControl.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,8 +83,12 @@
     <Compile Include="Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Parrot\Controls\NoiseControl.cs" />
     <Compile Include="Parrot\ParrotClient.cs" />
     <Compile Include="Parrot\ParrotMessage.cs" />
+    <Compile Include="Parrot\Resource\NotifyEventArgs.cs" />
+    <Compile Include="Parrot\Resource\ResourceType.cs" />
+    <Compile Include="Parrot\Resource\ResourceManager.cs" />
     <Compile Include="Parrot\ZikApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

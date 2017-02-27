@@ -54,7 +54,7 @@
 
         public const string AudioTrackMetadataGet = "/api/audio/track/metadata/get";
 
-        public const string BatteryGet = "/api/system/battery/get";
+//        public const string BatteryGet = "/api/system/battery/get";
 
         public const string ConcertHallAngleGet = "/api/audio/sound_effect/angle/get";
 
@@ -86,11 +86,11 @@
 
         public const string FriendlyNameSet = "/api/bluetooth/friendlyname/set";
 
-        public const string NoiseControlEnabledGet = "/api/audio/noise_control/enabled/get";
+//        public const string NoiseControlEnabledGet = "/api/audio/noise_control/enabled/get";
 
-        public const string NoiseControlEnabledSet = "/api/audio/noise_control/enabled/set";
+//        public const string NoiseControlEnabledSet = "/api/audio/noise_control/enabled/set";
 
-        public const string NoiseControlGet = "/api/audio/noise_control/get";
+//        public const string NoiseControlGet = "/api/audio/noise_control/get";
 
         public const string NoiseControlSet = "/api/audio/noise_control/set";
 

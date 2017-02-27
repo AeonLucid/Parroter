@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot
 {
     public class ParrotMessage
     {
-        public ParrotMessage(string resource, string arg = null)
+        public ParrotMessage(ResourceType resource, string arg = null)
         {
-            Resource = resource;
+            Resource = ResourceManager.Resources[resource];
             Arg = arg;
             Request = Resource.EndsWith("set", StringComparison.CurrentCultureIgnoreCase)
                 ? $@"SET {Resource}?arg={Arg?.ToLower()}"

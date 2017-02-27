@@ -8,7 +8,7 @@ using Timer = System.Threading.Timer;
 
 namespace Parroter.Forms
 {
-    public partial class FrmControl : Form
+    internal partial class FrmControl : Form
     {
         public Timer RefreshTimer { get; }
 
@@ -24,6 +24,7 @@ namespace Parroter.Forms
             TrayIcon = trayIcon;
             Parrot = new ParrotClient(device);
             Parrot.ConnectedEvent += ParrotOnConnectedEvent;
+            Parrot.NoiseControl.ChangedEvent += NoiseControlOnChangedEvent;
         }
 
         private async void FrmControl_Load(object sender, EventArgs e)
@@ -31,6 +32,11 @@ namespace Parroter.Forms
             Text = $@"Parroter: {Parrot.Device.DeviceName}";
 
             await Parrot.ConnectAsync();
+        }
+
+        private void FrmControl_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            RefreshTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void FrmControl_FormClosed(object sender, FormClosedEventArgs e)
@@ -49,17 +55,23 @@ namespace Parroter.Forms
                 TrayIcon.ShowBalloonTip(5000, "Parroter connection was successful.", $"Parroter has been succesfully connected to your {Parrot.Device.DeviceName}.", ToolTipIcon.Info);
             });
         }
+        
+        private void NoiseControlOnChangedEvent(object sender, EventArgs eventArgs)
+        {
+            this.InvokeIfRequired(() =>
+            {
+                TrayIconNoiseControl.Checked = Parrot.NoiseControl.Enabled;
+            });
+        }
 
         private async void RefreshTrayIcon(object state)
         {
             var battery = await Parrot.GetBatteryPercentAsync();
-            var noiseControl = await Parrot.GetNoiseControlEnabledAsync();
 
-            // Set
+            // Update tray
             this.InvokeIfRequired(() =>
             {
                 TrayIconBatteryText.Text = $"Battery: {battery}%";
-                TrayIconNoiseControl.Checked = noiseControl;
             });
 
             // Refresh after 5 seconds
@@ -68,16 +80,8 @@ namespace Parroter.Forms
 
         private async void TrayIconNoiseControl_Click(object sender, EventArgs e)
         {
-            var currentState = TrayIconNoiseControl.Checked;
-
-            // Send SET message to parrot
-            await Parrot.SetNoiseControlEnabledAsync(!currentState);
-
-            // Change tray
-            this.InvokeIfRequired(() =>
-            {
-                TrayIconNoiseControl.Checked = !currentState;
-            });
+            // Toggle
+            await Parrot.NoiseControl.SetEnabledAsync(!Parrot.NoiseControl.Enabled);
         }
     }
 }
