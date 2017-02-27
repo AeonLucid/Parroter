@@ -6,6 +6,7 @@
         BatteryGet,
         NoiseControlEnabledGet,
         NoiseControlEnabledSet,
-        NoiseControlGet
+        NoiseControlGet,
+        NoiseControlSet
     }
 }

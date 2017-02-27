@@ -83,7 +83,8 @@
     <Compile Include="Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Parrot\Controls\NoiseControl.cs" />
+    <Compile Include="Parrot\Controls\Noise\NoiseControl.cs" />
+    <Compile Include="Parrot\Controls\Noise\NoiseControlType.cs" />
     <Compile Include="Parrot\ParrotClient.cs" />
     <Compile Include="Parrot\ParrotMessage.cs" />
     <Compile Include="Parrot\Resource\NotifyEventArgs.cs" />

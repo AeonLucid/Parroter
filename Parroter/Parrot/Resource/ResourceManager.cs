@@ -11,7 +11,8 @@ namespace Parroter.Parrot.Resource
                 {ResourceType.BatteryGet, "/api/system/battery/get"},
                 {ResourceType.NoiseControlEnabledGet, "/api/audio/noise_control/enabled/get"},
                 {ResourceType.NoiseControlEnabledSet, "/api/audio/noise_control/enabled/set"},
-                {ResourceType.NoiseControlGet, "/api/audio/noise_control/get"}
+                {ResourceType.NoiseControlGet, "/api/audio/noise_control/get"},
+                {ResourceType.NoiseControlSet, "/api/audio/noise_control/set"}
             };
         }
 

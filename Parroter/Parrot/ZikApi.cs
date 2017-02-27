@@ -92,7 +92,7 @@
 
 //        public const string NoiseControlGet = "/api/audio/noise_control/get";
 
-        public const string NoiseControlSet = "/api/audio/noise_control/set";
+//        public const string NoiseControlSet = "/api/audio/noise_control/set";
 
         public const string SoftwareDownloadSizeSet = "/api/software/download_size/set";
 

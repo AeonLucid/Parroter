@@ -8,6 +8,7 @@ using System.Xml.XPath;
 using InTheHand.Net.Sockets;
 using Parroter.Extensions;
 using Parroter.Parrot.Controls;
+using Parroter.Parrot.Controls.Noise;
 using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot

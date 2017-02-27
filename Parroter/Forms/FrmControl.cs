@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using InTheHand.Net.Sockets;
 using Parroter.Extensions;
 using Parroter.Parrot;
+using Parroter.Parrot.Controls.Noise;
+using Parroter.Parrot.Resource;
 using Timer = System.Threading.Timer;
 
 namespace Parroter.Forms
@@ -55,33 +57,72 @@ namespace Parroter.Forms
                 TrayIcon.ShowBalloonTip(5000, "Parroter connection was successful.", $"Parroter has been succesfully connected to your {Parrot.Device.DeviceName}.", ToolTipIcon.Info);
             });
         }
-        
-        private void NoiseControlOnChangedEvent(object sender, EventArgs eventArgs)
-        {
-            this.InvokeIfRequired(() =>
-            {
-                TrayIconNoiseControl.Checked = Parrot.NoiseControl.Enabled;
-            });
-        }
 
         private async void RefreshTrayIcon(object state)
         {
             var battery = await Parrot.GetBatteryPercentAsync();
 
-            // Update tray
-            this.InvokeIfRequired(() =>
+            try
             {
-                TrayIconBatteryText.Text = $"Battery: {battery}%";
-            });
+                // Update tray
+                this.InvokeIfRequired(() =>
+                {
+                    TrayIconBatteryText.Text = $"Battery: {battery}%";
+                });
 
-            // Refresh after 5 seconds
-            RefreshTimer.Change(5000, Timeout.Infinite);
+                // Refresh after 5 seconds
+                RefreshTimer.Change(5000, Timeout.Infinite);
+            }
+            catch (ObjectDisposedException)
+            {
+                // ignored, is thrown because the application is shutting down.
+            }
         }
 
+        #region Noise control management
         private async void TrayIconNoiseControl_Click(object sender, EventArgs e)
         {
-            // Toggle
             await Parrot.NoiseControl.SetEnabledAsync(!Parrot.NoiseControl.Enabled);
         }
+
+        private void NoiseControlOnChangedEvent(object sender, EventArgs eventArgs)
+        {
+            this.InvokeIfRequired(() =>
+            {
+                TrayIconNoiseControl.Checked = Parrot.NoiseControl.Enabled;
+
+                NoiseControlMaxToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.NoiseControlMax;
+                NoiseControlOnToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.NoiseControlOn;
+                NoiseControlOffToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.NoiseControlOff;
+                StreetModeToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.StreetMode;
+                StreetModeMaxToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.StreetModeMax;
+            });
+        }
+
+        private async void NoiseControlMaxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.NoiseControl.SetType(NoiseControlType.NoiseControlMax);
+        }
+
+        private async void NoiseControlOnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.NoiseControl.SetType(NoiseControlType.NoiseControlOn);
+        }
+
+        private async void NoiseControlOffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.NoiseControl.SetType(NoiseControlType.NoiseControlOff);
+        }
+
+        private async void StreetModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.NoiseControl.SetType(NoiseControlType.StreetMode);
+        }
+
+        private async void StreetModeMaxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.NoiseControl.SetType(NoiseControlType.StreetModeMax);
+        }
+        #endregion
     }
 }
