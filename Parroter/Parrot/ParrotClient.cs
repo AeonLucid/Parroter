@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using InTheHand.Net.Sockets;
 using Parroter.Extensions;
-using Parroter.Parrot.Controls;
+using Parroter.Parrot.Controls.Battery;
 using Parroter.Parrot.Controls.Noise;
 using Parroter.Parrot.Resource;
 
@@ -18,7 +19,7 @@ namespace Parroter.Parrot
     /// </summary>
     internal class ParrotClient
     {
-        private readonly Guid[] _parrotRfServiceGuids = {
+        private static readonly Guid[] ParrotRfServiceGuids = {
             Guid.Parse("8b6814d3-6ce7-4498-9700-9312c1711f64")
         };
 
@@ -28,6 +29,7 @@ namespace Parroter.Parrot
         {
             Device = device;
             BluetoothClient = new BluetoothClient();
+            Battery = new Battery(this);
             NoiseControl = new NoiseControl(this);
 
             _waitingList = new Semaphore(1, 1);
@@ -36,6 +38,9 @@ namespace Parroter.Parrot
         public BluetoothDeviceInfo Device { get; }
 
         private BluetoothClient BluetoothClient { get; }
+
+        // Properties used to retrieve / modify settings
+        public Battery Battery { get; }
 
         public NoiseControl NoiseControl { get; }
 
@@ -48,7 +53,7 @@ namespace Parroter.Parrot
         public async Task ConnectAsync()
         {
             // Find the Parrot RF Service.
-            var parrotService = Device.InstalledServices.FirstOrDefault(x => _parrotRfServiceGuids.Contains(x));
+            var parrotService = Device.InstalledServices.FirstOrDefault(x => ParrotRfServiceGuids.Contains(x));
             if (parrotService == null)
                 throw new Exception("Couldn't find the parrot rf service.");
 
@@ -67,16 +72,6 @@ namespace Parroter.Parrot
 
             // Dispatch event
             ConnectedEvent.AsyncSafeInvoke(this, EventArgs.Empty);
-        }
-
-        public async Task<int> GetBatteryPercentAsync()
-        {
-            var battery = await SendMessageAsync(new ParrotMessage(ResourceType.BatteryGet));
-            var batteryValue = battery.XPathSelectElement("/system/battery").Attribute("percent")?.Value;
-            if (batteryValue == null)
-                throw new Exception(nameof(batteryValue));
-
-            return int.Parse(batteryValue);
         }
 
         /// <summary>
@@ -102,24 +97,48 @@ namespace Parroter.Parrot
                 await BluetoothClient.GetStream().WriteAsync(messageBytes, 0, messageBytes.Length);
                 await BluetoothClient.GetStream().FlushAsync();
 
-                // Receive the response
-                var response = await ReceiveResponseAsync();
+                // Hold response element
+                XElement answerElement;
 
-                // Parse response
-                var element = XElement.Parse(response);
+                // Hold notifications
+                var notifyElements = new List<XElement>();
 
-                // Notifications
-                var notifyElement = element.XPathSelectElement("/notify");
-                var notifyPath = notifyElement?.Attribute("path")?.Value;
-                if (notifyPath != null)
+                // Receive response(s)
+                do
                 {
+                    answerElement = XElement.Parse(await ReceiveResponseAsync());
+
+                    // Find notificiations
+                    if (answerElement.Name == "notify")
+                    {
+                        notifyElements.Add(answerElement);
+                    }
+                    else if (answerElement.Name == "answer")
+                    {
+                        var notifyElement = answerElement.XPathSelectElement("/notify");
+                        if (notifyElement != null)
+                        {
+                            notifyElements.Add(notifyElement);
+                        }
+                    }
+                } while (answerElement.Name != "answer");
+
+                // Handle notifications
+                foreach (var notifyElement in notifyElements)
+                {
+                    var notifyPath = notifyElement?.Attribute("path")?.Value;
+                    if (notifyPath == null) continue;
+
                     var resource = ResourceManager.Resources.FirstOrDefault(x => x.Value.Equals(notifyPath)).Key;
+
+                    // Debug message
+                    Console.WriteLine($"Dispatching notification {resource} ({notifyPath})");
 
                     NotificationEvent?.AsyncSafeInvoke(this, new NotifyEventArgs(resource, notifyPath));
                 }
 
                 // Return
-                return element;
+                return answerElement;
             }
             finally
             {
