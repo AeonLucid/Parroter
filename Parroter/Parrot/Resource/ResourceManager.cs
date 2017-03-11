@@ -13,6 +13,8 @@ namespace Parroter.Parrot.Resource
                 {ResourceType.NoiseControlEnabledSet, "/api/audio/noise_control/enabled/set"},
                 {ResourceType.NoiseControlGet, "/api/audio/noise_control/get"},
                 {ResourceType.NoiseControlSet, "/api/audio/noise_control/set"},
+                {ResourceType.ConcertHallAngleGet, "/api/audio/sound_effect/angle/get"},
+                {ResourceType.ConcertHallAngleSet, "/api/audio/sound_effect/angle/set"},
                 {ResourceType.ConcertHallEnabledGet, "/api/audio/sound_effect/enabled/get"},
                 {ResourceType.ConcertHallEnabledSet, "/api/audio/sound_effect/enabled/set"},
                 {ResourceType.ConcertHallGet, "/api/audio/sound_effect/get"},

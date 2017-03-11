@@ -8,6 +8,8 @@
         NoiseControlEnabledSet,
         NoiseControlGet,
         NoiseControlSet,
+        ConcertHallAngleGet,
+        ConcertHallAngleSet,
         ConcertHallEnabledGet,
         ConcertHallEnabledSet,
         ConcertHallGet,

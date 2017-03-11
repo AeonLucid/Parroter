@@ -22,6 +22,9 @@ namespace Parroter.Forms
 
         public FrmControl(NotifyIcon trayIcon, BluetoothDeviceInfo device)
         {
+            WindowState = FormWindowState.Minimized;
+            ShowInTaskbar = false;
+
             InitializeComponent();
 
             RefreshTimer = new Timer(RefreshTrayIcon, null, Timeout.Infinite, Timeout.Infinite);
@@ -35,6 +38,7 @@ namespace Parroter.Forms
 
         private async void FrmControl_Load(object sender, EventArgs e)
         {
+            Hide();
             Text = $@"Parroter: {Parrot.Device.DeviceName}";
 
             await Parrot.ConnectAsync();
@@ -169,6 +173,14 @@ namespace Parroter.Forms
                 JazzRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Jazz;
                 LivingRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Living;
                 SilentRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Silent;
+
+                // Angles
+                Angle30ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 30;
+                Angle60ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 60;
+                Angle90ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 90;
+                Angle120ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 120;
+                Angle150ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 150;
+                Angle180ToolStripMenuItem.Checked = Parrot.ConcertHall.Angle == 180;
             });
         }
 
@@ -190,6 +202,36 @@ namespace Parroter.Forms
         private async void SilentRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await Parrot.ConcertHall.SetTypeAsync(ConcertHallRoomType.Silent);
+        }
+
+        private async void Angle30ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(30);
+        }
+
+        private async void Angle60ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(60);
+        }
+
+        private async void Angle90ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(90);
+        }
+
+        private async void Angle120ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(120);
+        }
+
+        private async void Angle150ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(150);
+        }
+
+        private async void Angle180ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetAngleAsync(180);
         }
         #endregion
     }

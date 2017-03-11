@@ -56,9 +56,9 @@
 
 //        public const string BatteryGet = "/api/system/battery/get";
 
-        public const string ConcertHallAngleGet = "/api/audio/sound_effect/angle/get";
+//        public const string ConcertHallAngleGet = "/api/audio/sound_effect/angle/get";
 
-        public const string ConcertHallAngleSet = "/api/audio/sound_effect/angle/set";
+//        public const string ConcertHallAngleSet = "/api/audio/sound_effect/angle/set";
 
 //        public const string ConcertHallEnabledGet = "/api/audio/sound_effect/enabled/get";
 

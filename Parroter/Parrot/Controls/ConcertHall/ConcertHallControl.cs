@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Parroter.Extensions;
-using Parroter.Parrot.Controls.Noise;
 using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot.Controls.ConcertHall
 {
     internal class ConcertHallControl
     {
+        private static readonly int[] ValidAngles = {30, 60, 90, 120, 150, 180};
+
         private readonly ParrotClient _parrotClient;
 
         public ConcertHallControl(ParrotClient parrotClient)
@@ -45,6 +47,20 @@ namespace Parroter.Parrot.Controls.ConcertHall
             await SetConcertHallRoomAsync(type);
             
             Type = type;
+            ChangedEvent?.AsyncSafeInvoke(this, EventArgs.Empty);
+        }
+
+        public async Task SetAngleAsync(int angle)
+        {
+            // Don't have to change if this is already the current angle.
+            if (Angle == angle) return;
+
+            if (!ValidAngles.Contains(angle))
+                throw new Exception("Invalid angle specified.");
+
+            await SetConcertHallAngleAsync(angle);
+
+            Angle = angle;
             ChangedEvent?.AsyncSafeInvoke(this, EventArgs.Empty);
         }
 
@@ -104,11 +120,36 @@ namespace Parroter.Parrot.Controls.ConcertHall
             );
         }
 
-        // get..
+        private async Task<ConcertHallRoomType> GetConcertHallRoomAsync()
+        {
+            var concertHall = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.ConcertHallRoomGet));
+            var concertHallRoomStr = concertHall.XPathSelectElement("/audio/sound_effect").GetAttribute("room_size");
+
+            if (!Enum.TryParse(concertHallRoomStr, true, out ConcertHallRoomType roomSizeType))
+                throw new Exception($"Unknown room type {concertHallRoomStr}.");
+
+            return roomSizeType;
+        }
 
         private async Task SetConcertHallRoomAsync(ConcertHallRoomType type)
         {
             await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.ConcertHallRoomSet, type.ToString().ToLower()));
+        }
+
+        private async Task<int> GetConcertHallAngleAsync()
+        {
+            var concertHall = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.ConcertHallAngleGet));
+            var concertHallAngleStr = concertHall.XPathSelectElement("/audio/sound_effect").GetAttribute("angle");
+            
+            if (!int.TryParse(concertHallAngleStr, out int angle))
+                throw new Exception($"Invalid integer {concertHallAngleStr}.");
+
+            return angle;
+        }
+
+        private async Task SetConcertHallAngleAsync(int angle)
+        {
+            await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.ConcertHallAngleSet, angle.ToString()));
         }
 
         // Events
