@@ -55,15 +55,11 @@ namespace Parroter.Parrot.Controls.Battery
             var battery = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.BatteryGet));
             var batteryElement = battery.XPathSelectElement("/system/battery");
 
-            var batteryCharging = batteryElement.Attribute("state")?.Value;
-            if (batteryCharging == null)
-                throw new NullReferenceException(nameof(batteryCharging));
+            var batteryCharging = batteryElement.GetAttribute("state");
+            var batteryPercent = batteryElement.GetAttribute("percent");
+            var charging = batteryCharging.Equals("charging") || batteryCharging.Equals("charged");
 
-            var batteryPercent = batteryElement.Attribute("percent")?.Value;
-            if (batteryPercent == null)
-                throw new NullReferenceException(nameof(batteryPercent));
-
-            return (batteryCharging.Equals("charging"), int.Parse(batteryPercent));
+            return (charging, int.Parse(batteryPercent));
         }
 
         // Events

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using InTheHand.Net.Sockets;
 using Parroter.Extensions;
 using Parroter.Parrot;
+using Parroter.Parrot.Controls.ConcertHall;
 using Parroter.Parrot.Controls.Noise;
 using Timer = System.Threading.Timer;
 
@@ -11,6 +12,8 @@ namespace Parroter.Forms
 {
     internal partial class FrmControl : Form
     {
+        private const int RefreshPollDelay = 30000;
+
         private Timer RefreshTimer { get; }
 
         private NotifyIcon TrayIcon { get; }
@@ -27,6 +30,7 @@ namespace Parroter.Forms
             Parrot.ConnectedEvent += ParrotOnConnectedEvent;
             Parrot.Battery.ChangedEvent += BatteryOnChangedEvent;
             Parrot.NoiseControl.ChangedEvent += NoiseControlOnChangedEvent;
+            Parrot.ConcertHall.ChangedEvent += ConcertHallOnChangedEvent;
         }
 
         private async void FrmControl_Load(object sender, EventArgs e)
@@ -55,17 +59,17 @@ namespace Parroter.Forms
                 TrayIcon.ShowBalloonTip(5000, "Parroter connection was successful.", $"Parroter has been succesfully connected to your {Parrot.Device.DeviceName}.", ToolTipIcon.Info);
             });
 
-            RefreshTimer.Change(5000, Timeout.Infinite);
+            RefreshTimer.Change(RefreshPollDelay, Timeout.Infinite);
         }
 
         private async void RefreshTrayIcon(object state)
         {
             await Parrot.Battery.RefreshAsync();
             
-            RefreshTimer.Change(5000, Timeout.Infinite);
+            RefreshTimer.Change(RefreshPollDelay, Timeout.Infinite);
         }
 
-        #region Battery control
+        #region Battery Management
         private void BatteryOnChangedEvent(object sender, EventArgs eventArgs)
         {
             this.InvokeIfRequired(() =>
@@ -92,7 +96,7 @@ namespace Parroter.Forms
         }
         #endregion
 
-        #region Noise control management
+        #region Noise Cancellation Management
         private async void TrayIconNoiseControl_Click(object sender, EventArgs e)
         {
             await Parrot.NoiseControl.SetEnabledAsync(!Parrot.NoiseControl.Enabled);
@@ -103,6 +107,11 @@ namespace Parroter.Forms
             this.InvokeIfRequired(() =>
             {
                 TrayIconNoiseControl.Checked = Parrot.NoiseControl.Enabled;
+
+                foreach (ToolStripMenuItem dropdownItem in TrayIconNoiseControl.DropDownItems)
+                {
+                    dropdownItem.Enabled = TrayIconNoiseControl.Checked;
+                }
 
                 NoiseControlMaxToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.NoiseControlMax;
                 NoiseControlOnToolStripMenuItem.Checked = Parrot.NoiseControl.Type == NoiseControlType.NoiseControlOn;
@@ -135,6 +144,52 @@ namespace Parroter.Forms
         private async void StreetModeMaxToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await Parrot.NoiseControl.SetTypeAsync(NoiseControlType.StreetModeMax);
+        }
+        #endregion
+
+        #region Concert Hall Management
+        private async void TrayIconConcertHall_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetEnabledAsync(!Parrot.ConcertHall.Enabled);
+        }
+
+        private void ConcertHallOnChangedEvent(object sender, EventArgs eventArgs)
+        {
+            this.InvokeIfRequired(() =>
+            {
+                TrayIconConcertHall.Checked = Parrot.ConcertHall.Enabled;
+
+                foreach (ToolStripMenuItem dropdownItem in TrayIconConcertHall.DropDownItems)
+                {
+                    dropdownItem.Enabled = TrayIconConcertHall.Checked;
+                }
+
+                // Rooms
+                ConcertRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Concert;
+                JazzRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Jazz;
+                LivingRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Living;
+                SilentRoomToolStripMenuItem.Checked = Parrot.ConcertHall.Type == ConcertHallRoomType.Silent;
+            });
+        }
+
+        private async void ConcertRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetTypeAsync(ConcertHallRoomType.Concert);
+        }
+
+        private async void JazzRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetTypeAsync(ConcertHallRoomType.Jazz);
+        }
+
+        private async void LivingRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetTypeAsync(ConcertHallRoomType.Living);
+        }
+
+        private async void SilentRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Parrot.ConcertHall.SetTypeAsync(ConcertHallRoomType.Silent);
         }
         #endregion
     }

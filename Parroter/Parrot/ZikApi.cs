@@ -60,17 +60,17 @@
 
         public const string ConcertHallAngleSet = "/api/audio/sound_effect/angle/set";
 
-        public const string ConcertHallEnabledGet = "/api/audio/sound_effect/enabled/get";
+//        public const string ConcertHallEnabledGet = "/api/audio/sound_effect/enabled/get";
 
-        public const string ConcertHallEnabledSet = "/api/audio/sound_effect/enabled/set";
+//        public const string ConcertHallEnabledSet = "/api/audio/sound_effect/enabled/set";
 
-        public const string ConcertHallGet = "/api/audio/sound_effect/get";
+//        public const string ConcertHallGet = "/api/audio/sound_effect/get";
 
         public const string ConcertHallModeGet = "/api/audio/sound_effect/mode/get";
 
-        public const string ConcertHallRoomGet = "/api/audio/sound_effect/room_size/get";
-
-        public const string ConcertHallRoomSet = "/api/audio/sound_effect/room_size/set";
+//        public const string ConcertHallRoomGet = "/api/audio/sound_effect/room_size/get";
+//
+//        public const string ConcertHallRoomSet = "/api/audio/sound_effect/room_size/set";
 
         public const string EqualizerEnabledGet = "/api/audio/equalizer/enabled/get";
 

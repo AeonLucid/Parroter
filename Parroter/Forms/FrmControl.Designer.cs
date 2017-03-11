@@ -39,6 +39,12 @@
             this.NoiseControlOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StreetModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StreetModeMaxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TrayIconConcertHall = new System.Windows.Forms.ToolStripMenuItem();
+            this.RoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ConcertRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.JazzRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LivingRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SilentRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayIconContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,20 +53,21 @@
             this.TrayIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TrayIconBatteryText,
             this.toolStripSeparator1,
-            this.TrayIconNoiseControl});
+            this.TrayIconNoiseControl,
+            this.TrayIconConcertHall});
             this.TrayIconContextMenu.Name = "TrayIconContextMenu";
-            this.TrayIconContextMenu.Size = new System.Drawing.Size(153, 76);
+            this.TrayIconContextMenu.Size = new System.Drawing.Size(174, 76);
             // 
             // TrayIconBatteryText
             // 
             this.TrayIconBatteryText.Name = "TrayIconBatteryText";
-            this.TrayIconBatteryText.Size = new System.Drawing.Size(152, 22);
+            this.TrayIconBatteryText.Size = new System.Drawing.Size(173, 22);
             this.TrayIconBatteryText.Text = "Battery: 0%";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(170, 6);
             // 
             // TrayIconNoiseControl
             // 
@@ -71,8 +78,8 @@
             this.StreetModeToolStripMenuItem,
             this.StreetModeMaxToolStripMenuItem});
             this.TrayIconNoiseControl.Name = "TrayIconNoiseControl";
-            this.TrayIconNoiseControl.Size = new System.Drawing.Size(152, 22);
-            this.TrayIconNoiseControl.Text = "Noise control";
+            this.TrayIconNoiseControl.Size = new System.Drawing.Size(173, 22);
+            this.TrayIconNoiseControl.Text = "Noise Cancellation";
             this.TrayIconNoiseControl.Click += new System.EventHandler(this.TrayIconNoiseControl_Click);
             // 
             // NoiseControlMaxToolStripMenuItem
@@ -110,6 +117,54 @@
             this.StreetModeMaxToolStripMenuItem.Text = "Street mode max";
             this.StreetModeMaxToolStripMenuItem.Click += new System.EventHandler(this.StreetModeMaxToolStripMenuItem_Click);
             // 
+            // TrayIconConcertHall
+            // 
+            this.TrayIconConcertHall.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RoomToolStripMenuItem});
+            this.TrayIconConcertHall.Name = "TrayIconConcertHall";
+            this.TrayIconConcertHall.Size = new System.Drawing.Size(173, 22);
+            this.TrayIconConcertHall.Text = "Concert Hall";
+            this.TrayIconConcertHall.Click += new System.EventHandler(this.TrayIconConcertHall_Click);
+            // 
+            // RoomToolStripMenuItem
+            // 
+            this.RoomToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ConcertRoomToolStripMenuItem,
+            this.JazzRoomToolStripMenuItem,
+            this.LivingRoomToolStripMenuItem,
+            this.SilentRoomToolStripMenuItem});
+            this.RoomToolStripMenuItem.Name = "RoomToolStripMenuItem";
+            this.RoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.RoomToolStripMenuItem.Text = "Room";
+            // 
+            // ConcertRoomToolStripMenuItem
+            // 
+            this.ConcertRoomToolStripMenuItem.Name = "ConcertRoomToolStripMenuItem";
+            this.ConcertRoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ConcertRoomToolStripMenuItem.Text = "Concert";
+            this.ConcertRoomToolStripMenuItem.Click += new System.EventHandler(this.ConcertRoomToolStripMenuItem_Click);
+            // 
+            // JazzRoomToolStripMenuItem
+            // 
+            this.JazzRoomToolStripMenuItem.Name = "JazzRoomToolStripMenuItem";
+            this.JazzRoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.JazzRoomToolStripMenuItem.Text = "Jazz";
+            this.JazzRoomToolStripMenuItem.Click += new System.EventHandler(this.JazzRoomToolStripMenuItem_Click);
+            // 
+            // LivingRoomToolStripMenuItem
+            // 
+            this.LivingRoomToolStripMenuItem.Name = "LivingRoomToolStripMenuItem";
+            this.LivingRoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LivingRoomToolStripMenuItem.Text = "Living";
+            this.LivingRoomToolStripMenuItem.Click += new System.EventHandler(this.LivingRoomToolStripMenuItem_Click);
+            // 
+            // SilentRoomToolStripMenuItem
+            // 
+            this.SilentRoomToolStripMenuItem.Name = "SilentRoomToolStripMenuItem";
+            this.SilentRoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SilentRoomToolStripMenuItem.Text = "Silent";
+            this.SilentRoomToolStripMenuItem.Click += new System.EventHandler(this.SilentRoomToolStripMenuItem_Click);
+            // 
             // FrmControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,5 +194,11 @@
         private System.Windows.Forms.ToolStripMenuItem NoiseControlOffToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem StreetModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem StreetModeMaxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem TrayIconConcertHall;
+        private System.Windows.Forms.ToolStripMenuItem RoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ConcertRoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem JazzRoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LivingRoomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SilentRoomToolStripMenuItem;
     }
 }

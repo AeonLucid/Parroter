@@ -65,7 +65,7 @@ namespace Parroter.Parrot.Controls.Noise
 
             Type = newType;
 
-            // Dispatch initial event so the UI can update.
+            // Dispatch event so the UI can update.
             ChangedEvent?.AsyncSafeInvoke(this, EventArgs.Empty);
         }
 
@@ -73,9 +73,7 @@ namespace Parroter.Parrot.Controls.Noise
         private async Task<bool> GetNoiseControlEnabledAsync()
         {
             var noiseControl = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.NoiseControlEnabledGet));
-            var noiseControlValue = noiseControl.XPathSelectElement("/audio/noise_control").Attribute("enabled")?.Value;
-            if (noiseControlValue == null)
-                throw new NullReferenceException(nameof(noiseControlValue));
+            var noiseControlValue = noiseControl.XPathSelectElement("/audio/noise_control").GetAttribute("enabled");
 
             return noiseControlValue.Equals("true");
         }
@@ -91,13 +89,8 @@ namespace Parroter.Parrot.Controls.Noise
             var noiseControl = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.NoiseControlGet));
             var noiseControlElement = noiseControl.XPathSelectElement("/audio/noise_control");
 
-            var type = noiseControlElement.Attribute("type")?.Value;
-            if (type == null)
-                throw new NullReferenceException(nameof(type));
-
-            var value = noiseControlElement.Attribute("value")?.Value;
-            if (value == null)
-                throw new NullReferenceException(nameof(value));
+            var type = noiseControlElement.GetAttribute("type");
+            var value = noiseControlElement.GetAttribute("value");
 
             // Determine current type.
             NoiseControlType noiseControlType;

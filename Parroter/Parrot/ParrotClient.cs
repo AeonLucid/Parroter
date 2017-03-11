@@ -9,7 +9,9 @@ using System.Xml.XPath;
 using InTheHand.Net.Sockets;
 using Parroter.Extensions;
 using Parroter.Parrot.Controls.Battery;
+using Parroter.Parrot.Controls.ConcertHall;
 using Parroter.Parrot.Controls.Noise;
+using Parroter.Parrot.Exceptions;
 using Parroter.Parrot.Resource;
 
 namespace Parroter.Parrot
@@ -31,6 +33,7 @@ namespace Parroter.Parrot
             BluetoothClient = new BluetoothClient();
             Battery = new Battery(this);
             NoiseControl = new NoiseControl(this);
+            ConcertHall = new ConcertHallControl(this);
 
             _waitingList = new Semaphore(1, 1);
         }
@@ -43,6 +46,8 @@ namespace Parroter.Parrot
         public Battery Battery { get; }
 
         public NoiseControl NoiseControl { get; }
+
+        public ConcertHallControl ConcertHall { get; }
 
         /// <summary>
         ///     Connects to the Parrot RF Service, if that succeeds
@@ -89,7 +94,7 @@ namespace Parroter.Parrot
             try
             {
                 // Debug message
-                Console.WriteLine($"Sending message '{message.Request}'");
+                Console.WriteLine($"=> Sending message '{message.Request}'");
 
                 // Send message to Parrot
                 var messageBytes = message.GetRequest();
@@ -130,9 +135,11 @@ namespace Parroter.Parrot
                     if (notifyPath == null) continue;
 
                     var resource = ResourceManager.Resources.FirstOrDefault(x => x.Value.Equals(notifyPath)).Key;
+                    if (resource == ResourceType.UnknownResource)
+                        throw new UnhandledNotificationException($"Received an unknown notification: {notifyPath}");
 
                     // Debug message
-                    Console.WriteLine($"Dispatching notification {resource} ({notifyPath})");
+                    Console.WriteLine($"=> Dispatching notification {resource} ({notifyPath})");
 
                     NotificationEvent?.AsyncSafeInvoke(this, new NotifyEventArgs(resource, notifyPath));
                 }

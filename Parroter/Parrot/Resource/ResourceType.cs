@@ -7,6 +7,11 @@
         NoiseControlEnabledGet,
         NoiseControlEnabledSet,
         NoiseControlGet,
-        NoiseControlSet
+        NoiseControlSet,
+        ConcertHallEnabledGet,
+        ConcertHallEnabledSet,
+        ConcertHallGet,
+        ConcertHallRoomGet,
+        ConcertHallRoomSet
     }
 }

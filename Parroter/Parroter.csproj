@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
+    <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Forms\FrmControl.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,8 +88,11 @@
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Parrot\Controls\Battery\Battery.cs" />
+    <Compile Include="Parrot\Controls\ConcertHall\ConcertHallControl.cs" />
+    <Compile Include="Parrot\Controls\ConcertHall\ConcertHallRoomType.cs" />
     <Compile Include="Parrot\Controls\Noise\NoiseControl.cs" />
     <Compile Include="Parrot\Controls\Noise\NoiseControlType.cs" />
+    <Compile Include="Parrot\Exceptions\UnhandledNotificationException.cs" />
     <Compile Include="Parrot\ParrotClient.cs" />
     <Compile Include="Parrot\ParrotMessage.cs" />
     <Compile Include="Parrot\Resource\NotifyEventArgs.cs" />
