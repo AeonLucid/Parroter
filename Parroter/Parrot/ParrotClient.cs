@@ -103,12 +103,10 @@ namespace Parroter.Parrot
                 await BluetoothClient.GetStream().FlushAsync();
 
                 // Receive the response
-                var responseBuffer = new byte[1024];
-                await BluetoothClient.GetStream().ReadAsync(responseBuffer, 0, responseBuffer.Length);
+                var response = await ReceiveResponseAsync();
 
                 // Parse response
-                var responseLength = (short)((responseBuffer[0] << 8) | (responseBuffer[1] << 0));
-                var element = XElement.Parse(Encoding.ASCII.GetString(responseBuffer, 7, responseLength - 7));
+                var element = XElement.Parse(response);
 
                 // Notifications
                 var notifyElement = element.XPathSelectElement("/notify");
@@ -127,6 +125,23 @@ namespace Parroter.Parrot
             {
                 _waitingList.Release();
             }
+        }
+
+        private async Task<string> ReceiveResponseAsync()
+        {
+            // Get packet length bytes
+            var lengthBytes = new byte[2];
+            await BluetoothClient.GetStream().ReadAsync(lengthBytes, 0, 2);
+
+            // Get packet length as short
+            var responseLength = (short)((lengthBytes[0] << 8) | (lengthBytes[1] << 0));
+
+            // Get packet byte array
+            var responseBytes = new byte[responseLength];
+            await BluetoothClient.GetStream().ReadAsync(responseBytes, 0, responseLength);
+
+            // Return, cut off non-string data
+            return Encoding.ASCII.GetString(responseBytes, 5, responseLength - 7);
         }
 
         public event EventHandler<EventArgs> ConnectedEvent;
