@@ -54,23 +54,23 @@
 
         public const string AudioTrackMetadataGet = "/api/audio/track/metadata/get";
 
-//        public const string BatteryGet = "/api/system/battery/get";
+        //        public const string BatteryGet = "/api/system/battery/get";
 
-//        public const string ConcertHallAngleGet = "/api/audio/sound_effect/angle/get";
+        //        public const string ConcertHallAngleGet = "/api/audio/sound_effect/angle/get";
 
-//        public const string ConcertHallAngleSet = "/api/audio/sound_effect/angle/set";
+        //        public const string ConcertHallAngleSet = "/api/audio/sound_effect/angle/set";
 
-//        public const string ConcertHallEnabledGet = "/api/audio/sound_effect/enabled/get";
+        //        public const string ConcertHallEnabledGet = "/api/audio/sound_effect/enabled/get";
 
-//        public const string ConcertHallEnabledSet = "/api/audio/sound_effect/enabled/set";
+        //        public const string ConcertHallEnabledSet = "/api/audio/sound_effect/enabled/set";
 
-//        public const string ConcertHallGet = "/api/audio/sound_effect/get";
+        //        public const string ConcertHallGet = "/api/audio/sound_effect/get";
 
         public const string ConcertHallModeGet = "/api/audio/sound_effect/mode/get";
 
-//        public const string ConcertHallRoomGet = "/api/audio/sound_effect/room_size/get";
-//
-//        public const string ConcertHallRoomSet = "/api/audio/sound_effect/room_size/set";
+        //        public const string ConcertHallRoomGet = "/api/audio/sound_effect/room_size/get";
+        //
+        //        public const string ConcertHallRoomSet = "/api/audio/sound_effect/room_size/set";
 
         public const string EqualizerEnabledGet = "/api/audio/equalizer/enabled/get";
 
@@ -86,13 +86,13 @@
 
         public const string FriendlyNameSet = "/api/bluetooth/friendlyname/set";
 
-//        public const string NoiseControlEnabledGet = "/api/audio/noise_control/enabled/get";
+        //        public const string NoiseControlEnabledGet = "/api/audio/noise_control/enabled/get";
 
-//        public const string NoiseControlEnabledSet = "/api/audio/noise_control/enabled/set";
+        //        public const string NoiseControlEnabledSet = "/api/audio/noise_control/enabled/set";
 
-//        public const string NoiseControlGet = "/api/audio/noise_control/get";
+        //        public const string NoiseControlGet = "/api/audio/noise_control/get";
 
-//        public const string NoiseControlSet = "/api/audio/noise_control/set";
+        //        public const string NoiseControlSet = "/api/audio/noise_control/set";
 
         public const string SoftwareDownloadSizeSet = "/api/software/download_size/set";
 
@@ -111,7 +111,7 @@
         public const string SystemAutoConnectionGet = "/api/system/auto_connection/enabled/get";
 
         public const string SystemAutoConnectionSet = "/api/system/auto_connection/enabled/set";
-        
+
         public const string SystemAutoPowerOffGet = "/api/system/auto_power_off/get";
 
         public const string SystemAutoPowerOffSet = "/api/system/auto_power_off/set";
@@ -141,5 +141,62 @@
         public const string ThumbEqualizerValueGet = "/api/audio/thumb_equalizer/value/get";
 
         public const string ThumbEqualizerValueSet = "/api/audio/thumb_equalizer/value/set";
+
+        public static readonly string[] KnowMessages =
+        {
+            "/api/account/username/get",
+            "/api/account/username/set",
+            "/api/appli_version/set",
+            "/api/audio/noise_control/phone_mode/get",
+            "/api/audio/noise_control/phone_mode/set",
+            "/api/audio/noise_control/auto_nc/set",
+            "/api/audio/noise/get",
+            "/api/audio/param_equalizer/value/set",
+            "/api/audio/preset/activate",
+            "/api/audio/preset/bypass/get",
+            "/api/audio/preset/bypass/set",
+            "/api/audio/preset/clear_all",
+            "/api/audio/preset/counter/get",
+            "/api/audio/preset/current/get",
+            "/api/audio/preset/download",
+            "/api/audio/preset/cancel_producer",
+            "/api/audio/preset/remove",
+            "/api/audio/preset/save",
+            "/api/audio/preset/synchro/start",
+            "/api/audio/preset/synchro/stop",
+            "/api/audio/smart_audio_tune/get",
+            "/api/audio/smart_audio_tune/set",
+            "/api/audio/source/get",
+            "/api/audio/track/metadata/get",
+            "/api/audio/sound_effect/mode/get",
+            "/api/audio/equalizer/enabled/get",
+            "/api/audio/equalizer/enabled/set",
+            "/api/bluetooth/friendlyname/get",
+            "/api/bluetooth/friendlyname/set",
+            "/api/software/download_size/set",
+            "/api/software/tts/disable",
+            "/api/software/tts/enable",
+            "/api/software/tts/get",
+            "/api/software/version/get",
+            "/api/audio/delay/get",
+            "/api/audio/delay/set",
+            "/api/system/auto_connection/enabled/get",
+            "/api/system/auto_connection/enabled/set",
+            "/api/system/auto_power_off/get",
+            "/api/system/auto_power_off/set",
+            "/api/system/bt_address/get",
+            "/api/system/color/get",
+            "/api/system/pi/get",
+            "/api/system/device_type/get",
+            "/api/features/get",
+            "/api/flight_mode/disable",
+            "/api/flight_mode/enable",
+            "/api/flight_mode/get",
+            "/api/system/head_detection/enabled/get",
+            "/api/system/head_detection/enabled/set",
+            "/api/system/texture/get",
+            "/api/audio/thumb_equalizer/value/get",
+            "/api/audio/thumb_equalizer/value/set",
+        };
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Parroter.Parrot.Exceptions
 {
-    internal class UnhandledNotificationException : Exception
+    internal class UnknownNotificationException : Exception
     {
-        public UnhandledNotificationException(string message) : base(message)
+        public UnknownNotificationException(string message) : base(message)
         {
         }
     }

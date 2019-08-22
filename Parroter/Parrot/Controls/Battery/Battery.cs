@@ -52,7 +52,7 @@ namespace Parroter.Parrot.Controls.Battery
         // Parrot interaction
         private async Task<(bool charging, int batteryPercent)> GetBatteryAsync()
         {
-            var battery = await _parrotClient.SendMessageAsync(new ParrotMessage(ResourceType.BatteryGet));
+            var battery = await _parrotClient.SendMessageAsyncRetry(new ParrotMessage(ResourceType.BatteryGet));
             var batteryElement = battery.XPathSelectElement("/system/battery");
 
             var batteryCharging = batteryElement.GetAttribute("state");
