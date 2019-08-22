@@ -13,6 +13,7 @@ using Parroter.Parrot.Controls.ConcertHall;
 using Parroter.Parrot.Controls.Noise;
 using Parroter.Parrot.Exceptions;
 using Parroter.Parrot.Resource;
+using Polly;
 
 namespace Parroter.Parrot
 {
@@ -37,7 +38,7 @@ namespace Parroter.Parrot
 
             _waitingList = new Semaphore(1, 1);
         }
-        
+
         public BluetoothDeviceInfo Device { get; }
 
         private BluetoothClient BluetoothClient { get; }
@@ -77,6 +78,20 @@ namespace Parroter.Parrot
 
             // Dispatch event
             ConnectedEvent.AsyncSafeInvoke(this, EventArgs.Empty);
+        }
+
+        public async Task<XElement> SendMessageAsyncRetry(ParrotMessage message)
+        {
+            return await Policy.Handle<System.Xml.XmlException>(e =>
+            {
+                Console.WriteLine($"SendMessageAsyncRetry Exception :: {e.Message}");
+                return true;
+            }).WaitAndRetryAsync(new[]
+              {
+                TimeSpan.FromMilliseconds(50),
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(150)
+              }).ExecuteAsync(async() => await SendMessageAsync(message));
         }
 
         /// <summary>
@@ -135,8 +150,13 @@ namespace Parroter.Parrot
                     if (notifyPath == null) continue;
 
                     var resource = ResourceManager.Resources.FirstOrDefault(x => x.Value.Equals(notifyPath)).Key;
-                    if (resource == ResourceType.UnknownResource)
-                        throw new UnhandledNotificationException($"Received an unknown notification: {notifyPath}");
+                    if (resource == ResourceType.UnknownResource && ZikApi.KnowMessages.Contains(notifyPath))
+                    {
+                        Console.WriteLine($"=> Received unhandled notification {resource} ({notifyPath})");
+                        continue;
+                    }
+                    else if (resource == ResourceType.UnknownResource)
+                        throw new UnknownNotificationException($"Received an unknown notification: {notifyPath}");
 
                     // Debug message
                     Console.WriteLine($"=> Dispatching notification {resource} ({notifyPath})");
@@ -159,15 +179,16 @@ namespace Parroter.Parrot
             var lengthBytes = new byte[2];
             await BluetoothClient.GetStream().ReadAsync(lengthBytes, 0, 2);
 
-            // Get packet length as short
-            var responseLength = (short)((lengthBytes[0] << 8) | (lengthBytes[1] << 0));
+            // Get packet length as ushort 
+            var responseLength = (ushort)((lengthBytes[0] << 8) | (lengthBytes[1] << 0));
 
             // Get packet byte array
             var responseBytes = new byte[responseLength];
             await BluetoothClient.GetStream().ReadAsync(responseBytes, 0, responseLength);
 
             // Return, cut off non-string data
-            return Encoding.ASCII.GetString(responseBytes, 5, responseLength - 7);
+            var res = Encoding.ASCII.GetString(responseBytes, 5, responseLength - 7);
+            return res;
         }
 
         public event EventHandler<EventArgs> ConnectedEvent;
